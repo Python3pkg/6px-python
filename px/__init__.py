@@ -10,6 +10,7 @@ class PX:
 		self.api_key = api_key
 		self.api_secret = api_secret
 		self.image = None
+		self.callback = None
 		self.actions = {}
 
 	def load(self, image):
@@ -43,17 +44,19 @@ class PX:
 	def crop(self, position):
 		self.actions['crop'] = position
 
-		return
+		return self
+
+	def callback(self, url):
+		self.callback = url
+
+		return self
 
 	def save(self):
 
 		uri = self.parse_input(self.image)
 
-		output = json.dumps({
+		data = {
 			'input': [uri],
-			'callback': {
-				'url': 'http://6px.io'
-			},
 			'priority': 0,
 			'user_id': self.user_id,
 			'output': [{
@@ -62,9 +65,14 @@ class PX:
 				'type': 'image/png',
 				'methods': [self.actions]
 			}]
-		})
+		}
 
-		response = self.send(output)
+		if self.callback is not None:
+			data['callback'] = {
+				'url': 'http://6px.io'
+			}
+
+		response = self.send(json.dumps(data))
 
 		print response
 
@@ -92,15 +100,3 @@ class PX:
 
 		return data
 
-
-
-if __name__ == '__main__':
-
-	px = PX.init(
-		user_id='51df7563ece2e10000000002', 
-		api_key='152463ce1bdb025128205d0a0bdb1ab5', 
-		api_secret='5a617c03b76e49f60d3a685132f5b4b5'
-	)
-	px.load('/Users/dustin/Pictures/astronaut.jpg')
-	px.resize({ 'width': 200, 'height': 400 })
-	px.save()
