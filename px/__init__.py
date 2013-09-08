@@ -11,6 +11,8 @@ class PX:
 		self.api_secret = api_secret
 		self.image = None
 		self.callback = None
+		self.tag = None
+		self.type = 'image/png'
 		self.actions = {}
 
 	def load(self, image):
@@ -51,6 +53,16 @@ class PX:
 
 		return self
 
+	def tag(self, tag):
+		self.tag = tag
+
+		return self
+
+	def type(self, mime):
+		self.type = mime
+
+		return self
+
 	def save(self):
 
 		uri = self.parse_input(self.image)
@@ -61,14 +73,16 @@ class PX:
 			'user_id': self.user_id,
 			'output': [{
 				'ref': [0],
-				'tag': 'heyo',
-				'type': 'image/png',
+				'type': self.tag,
 				'methods': [self.actions]
 			}]
 		}
 
+		if self.tag is not None:
+			data['output']['tag'] = self.tag
+
 		if self.callback is not None:
-			data['callback'] = {
+			data['output']['callback'] = {
 				'url': 'http://6px.io'
 			}
 
