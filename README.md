@@ -3,6 +3,8 @@
 
 Simple usage:
 
+	import px
+	
 	px = PX.init(
 		user_id='YOUR USER ID', 
 		api_key='YOUR API KEY', 
