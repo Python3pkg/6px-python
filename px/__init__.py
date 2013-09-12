@@ -97,7 +97,7 @@ class PX:
 
 	def send(self, data):
 
-		conn = httplib.HTTPConnection('https://api.6px.io', 80)
+		conn = httplib.HTTPConnection('https://api.6px.io', 443)
 		
 		conn.request('POST', '/users/'+ self.user_id + '/jobs?key='+ self.api_key + '&secret='+ self.api_secret, data, {
 			'Content-Type': 'application/json'
