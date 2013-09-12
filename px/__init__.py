@@ -13,6 +13,7 @@ class PX:
 		self.callback = None
 		self.tag = None
 		self.type = 'image/png'
+		self.version = '0.0.1'
 		self.actions = {}
 
 	def load(self, image):
@@ -100,7 +101,8 @@ class PX:
 		conn = httplib.HTTPConnection('https://api.6px.io', 443)
 		
 		conn.request('POST', '/users/'+ self.user_id + '/jobs?key='+ self.api_key + '&secret='+ self.api_secret, data, {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'User-Agent': '6px Python SDK '+ self.version
 		})
 
 		res = conn.getresponse()
