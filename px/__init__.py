@@ -39,7 +39,7 @@ class PX:
 		Sets an action to our image to resize given the width and height given
 		"""
 
-		self.actions.push({ 'method': 'resize', 'options': size })
+		self.actions.append({ 'method': 'resize', 'options': size })
 
 		return self
 
@@ -59,7 +59,7 @@ class PX:
 		Rotates our input image
 		"""
 
-		self.actions.push({ 'method': 'rotate', 'options': options })
+		self.actions.append({ 'method': 'rotate', 'options': options })
 
 		return self
 
@@ -68,7 +68,7 @@ class PX:
 		Crops our image to given coordinates or to the dominate face
 		"""
 
-		self.actions.push({ 'method': 'crop', 'options': position })
+		self.actions.append({ 'method': 'crop', 'options': position })
 
 		return self
 
