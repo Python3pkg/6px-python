@@ -3,8 +3,15 @@ import httplib, json, base64, mimetypes
 class PX:
 	@staticmethod
 	def init(user_id, api_key, api_secret):
+		"""
+		Factory method to create a new 6px request
+		"""
+
 		return PX(user_id, api_key, api_secret)
 
+	"""
+	Represents a single 6px request
+	"""
 	def __init__(self, user_id, api_key, api_secret):
 		self.user_id = user_id
 		self.api_key = api_key
@@ -13,60 +20,95 @@ class PX:
 		self.callback = None
 		self.tag = None
 		self.type = 'image/png'
-		self.version = '0.0.1'
-		self.actions = {}
+		self.version = '0.0.4'
+		self.hasFilters = False
+		self.actions = []
+		self.filters = {}
 
 	def load(self, image):
+		"""
+		Sets our input image
+		"""
+
 		self.image = image
 
 		return self
 
 	def resize(self, size):
-		self.actions['resize'] = size
+		"""
+		Sets an action to our image to resize given the width and height given
+		"""
+
+		self.actions.push({ 'method': 'resize', 'options': size })
 
 		return self
 
 	def filter(self, type, value):
-		if 'filter' not in self.actions:
-			self.actions['filter'] = {}
+		"""
+		Sets image filters to our image
+		"""
+
+		self.hasFilters = True
 
 		self.actions['filter'][type] = value
 
 		return self
 
-	def priority(self, number):
-		self.priority = number
-
-		return self
-
 	def rotate(self, options):
-		self.actions['rotate'] = options
+		"""
+		Rotates our input image
+		"""
+
+		self.actions.push({ 'method': 'rotate', 'options': options })
 
 		return self
 
 	def crop(self, position):
-		self.actions['crop'] = position
+		"""
+		Crops our image to given coordinates or to the dominate face
+		"""
+
+		self.actions.push({ 'method': 'crop', 'options': position })
 
 		return self
 
 	def callback(self, url):
+		"""
+		Set a callback URL for whenever the job is done
+		"""
+
 		self.callback = url
 
 		return self
 
 	def tag(self, tag):
+		"""
+		Sets the tag for our input image
+		"""
+
 		self.tag = tag
 
 		return self
 
 	def type(self, mime):
+		"""
+		Set the destination mimetype of our image
+		"""
+
 		self.type = mime
 
 		return self
 
 	def save(self):
+		"""
+		Make our call to 6px to proess our job
+		"""
 
 		uri = self.parse_input(self.image)
+
+		if self.hasFilters:
+			self.actions.append({ 'method': 'filter', 'options': self.filters })
+
 
 		data = {
 			'input': [uri],
@@ -75,7 +117,7 @@ class PX:
 			'output': [{
 				'ref': [0],
 				'type': self.tag,
-				'methods': [self.actions]
+				'methods': self.actions
 			}]
 		}
 
@@ -92,11 +134,18 @@ class PX:
 		print response
 
 	def parse_input(self, input):
+		"""
+		Converts our input to a base64 encoded string
+		"""
+
 		with open(input, "rb") as image:
 		    encoded = base64.b64encode(image.read())
 		    return 'data:'+ mimetypes.guess_type(input)[0] + ';base64,' + encoded
 
 	def send(self, data):
+		"""
+		Makes our HTTP request to 6px
+		"""
 
 		conn = httplib.HTTPConnection('https://api.6px.io/v1', 443)
 		
