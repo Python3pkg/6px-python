@@ -111,11 +111,11 @@ class PX:
 
 
 		data = {
-			'input': [uri],
+			'input': { 'main': uri },
 			'priority': 0,
 			'user_id': self.user_id,
 			'output': [{
-				'ref': [0],
+				'ref': [ 'main' ],
 				'type': self.tag,
 				'methods': self.actions
 			}]
