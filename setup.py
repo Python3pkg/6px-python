@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-	name='6px',
-	version='0.0.10',
+	name='_6px',
+	version='0.0.11',
 	author='6px',
 	author_email='ops@6px.io',
 	packages=['_6px'],
