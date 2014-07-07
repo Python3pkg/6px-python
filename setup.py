@@ -9,5 +9,5 @@ setup(
 	url='http://pypi.python.org/pypi/6px/',
 	license='LICENSE',
 	description='6px python sdk',
-	long_description=open('README.md').read(),
+	long_description=open('README.txt').read(),
 )
