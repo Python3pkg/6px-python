@@ -1,36 +1,23 @@
-import httplib, json, base64, mimetypes
+import httplib, json, base64, mimetypes, socket
 
-class PX:
-	@staticmethod
-	def init(user_id, api_key, api_secret):
-		"""
-		Factory method to create a new 6px request
-		"""
+from urlparse import urlparse
 
-		return PX(user_id, api_key, api_secret)
-
-	"""
-	Represents a single 6px request
-	"""
-	def __init__(self, user_id, api_key, api_secret):
-		self.user_id = user_id
-		self.api_key = api_key
-		self.api_secret = api_secret
-		self.image = None
-		self.callback = None
-		self.tag = None
-		self.type = 'image/png'
-		self.version = '0.0.4'
+class Output:
+	def __init__(self, refs):
 		self.hasFilters = False
 		self.actions = []
 		self.filters = {}
+		self.type = 'image/png'
+		self.location = None
+		self.tagName = None
+		self.refs = refs
 
-	def load(self, image):
+	def tag(self, tag):
 		"""
-		Sets our input image
+		Sets the tag for our input image
 		"""
 
-		self.image = image
+		self.tagName = tag
 
 		return self
 
@@ -50,7 +37,7 @@ class PX:
 
 		self.hasFilters = True
 
-		self.actions['filter'][type] = value
+		self.filters[type] = value
 
 		return self
 
@@ -63,6 +50,11 @@ class PX:
 
 		return self
 
+	def url(self, location):
+		self.location = location
+
+		return self
+
 	def crop(self, position):
 		"""
 		Crops our image to given coordinates or to the dominate face
@@ -71,6 +63,66 @@ class PX:
 		self.actions.append({ 'method': 'crop', 'options': position })
 
 		return self
+
+	def export(self):
+		"""
+		Generates the dictionary needed for this output
+		"""
+
+		if self.hasFilters:
+			self.actions.append({ 'method': 'filter', 'options': self.filters })
+
+		output = {
+			'ref': self.refs,
+			'type': self.type,
+			'tag': self.tagName,
+			'methods': self.actions
+		}
+
+		if self.location:
+			output['url'] = self.location
+
+		return output;
+
+
+class PX:
+	@staticmethod
+	def init(user_id, api_key, api_secret):
+		"""
+		Factory method to create a new 6px request
+		"""
+
+		return PX(user_id, api_key, api_secret)
+
+	"""
+	Represents a single 6px request
+	"""
+	def __init__(self, user_id, api_key, api_secret):
+		self.user_id = user_id
+		self.api_key = api_key
+		self.api_secret = api_secret
+		self.images = {}
+		self.outputs = []
+		self.callback = None
+		self.url = None
+
+		self.version = '0.0.8'
+
+	def output(self, refs):
+		out = Output(refs)
+		self.outputs.append(out)
+
+		return out
+
+	def load(self, name, image):
+		"""
+		Sets our input image
+		"""
+
+		self.images[name] = image
+
+		return self
+
 
 	def callback(self, url):
 		"""
@@ -81,14 +133,6 @@ class PX:
 
 		return self
 
-	def tag(self, tag):
-		"""
-		Sets the tag for our input image
-		"""
-
-		self.tag = tag
-
-		return self
 
 	def type(self, mime):
 		"""
@@ -104,28 +148,21 @@ class PX:
 		Make our call to 6px to proess our job
 		"""
 
-		uri = self.parse_input(self.image)
+		inputs = {}
+		for key, value in self.images.iteritems():
+			inputs[key] = self.parse_input(value)
 
-		if self.hasFilters:
-			self.actions.append({ 'method': 'filter', 'options': self.filters })
-
+		outputs = []
+		for output in self.outputs:
+			outputs.append(output.export())
 
 		data = {
-			'input': { 'main': uri },
-			'priority': 0,
-			'user_id': self.user_id,
-			'output': [{
-				'ref': [ 'main' ],
-				'type': self.tag,
-				'methods': self.actions
-			}]
+			'input': inputs,
+			'output': outputs
 		}
 
-		if self.tag is not None:
-			data['output']['tag'] = self.tag
-
 		if self.callback is not None:
-			data['output']['callback'] = {
+			data['callback'] = {
 				'url': 'http://6px.io'
 			}
 
@@ -138,6 +175,12 @@ class PX:
 		Converts our input to a base64 encoded string
 		"""
 
+		o = urlparse(input)
+
+		# its a URL and not a file
+		if o.scheme:
+			return input
+
 		with open(input, "rb") as image:
 		    encoded = base64.b64encode(image.read())
 		    return 'data:'+ mimetypes.guess_type(input)[0] + ';base64,' + encoded
@@ -147,9 +190,9 @@ class PX:
 		Makes our HTTP request to 6px
 		"""
 
-		conn = httplib.HTTPConnection('https://api.6px.io/v1', 443)
-		
-		conn.request('POST', '/users/'+ self.user_id + '/jobs?key='+ self.api_key + '&secret='+ self.api_secret, data, {
+		conn = httplib.HTTPSConnection('api.6px.io')
+
+		conn.request('POST', '/v1/users/'+ self.user_id + '/jobs?key='+ self.api_key + '&secret='+ self.api_secret, data, {
 			'Content-Type': 'application/json',
 			'User-Agent': '6px Python SDK '+ self.version
 		})
@@ -159,9 +202,8 @@ class PX:
 		status = res.status
 		reason = res.reason
 
-		data = res.read()
+		r = res.read()
 
 		conn.close()
 
-		return data
-
+		return r
