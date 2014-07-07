@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='6px',
-	version='0.0.9',
+	version='0.0.10',
 	author='6px',
 	author_email='ops@6px.io',
 	packages=['_6px'],
