@@ -25,7 +25,7 @@ class PX:
 		self.callback = None
 		self.url = None
 
-		self.version = '0.0.15'
+		self.version = '0.0.18'
 
 	def output(self, refs):
 		out = Output(refs)
