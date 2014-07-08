@@ -1,5 +1,5 @@
-6px-python-sdk
-==============
+Python library for 6px
+======================
 
 Simple usage:
 
