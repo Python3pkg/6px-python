@@ -9,5 +9,4 @@ setup(
     url='https://github.com/6px-io/6px-python',
 	license='LICENSE',
 	description='6px python sdk',
-	long_description=open('README.rst').read(),
 )
