@@ -104,7 +104,7 @@ out.tag('green_blur')
 	.url('6px')
 	.filter({
 		colorize: { hex: '#00FF00', strength: 80 },
-		stackBlur: 5
+		stackBlur: 20
 	});
 
 px.save()
