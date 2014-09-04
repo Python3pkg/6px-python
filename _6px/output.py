@@ -8,6 +8,8 @@ class Output:
         self.tagName = None
         self.refs = refs
 
+        self.data = {}
+
     def tag(self, tag):
         """
         Sets the tag for our input image
@@ -22,7 +24,7 @@ class Output:
         Sets an action to our image to resize given the width and height given
         """
 
-        self.actions.append({ 'method': 'resize', 'options': size })
+        self.data['resize'] = dict(self.data.get('resize', {}).items() + size.items())
 
         return self
 
@@ -42,7 +44,7 @@ class Output:
         Rotates our input image
         """
 
-        self.actions.append({ 'method': 'rotate', 'options': options })
+        self.data['rotate'] = dict(self.data.get('rotate', {}).items() + size.items())
 
         return self
 
@@ -56,7 +58,7 @@ class Output:
         Crops our image to given coordinates or to the dominate face
         """
 
-        self.actions.append({ 'method': 'crop', 'options': position })
+        self.data['crop'] = dict(self.data.get('crop', {}).items() + size.items())
 
         return self
 
@@ -67,6 +69,12 @@ class Output:
 
         if self.hasFilters:
             self.actions.append({ 'method': 'filter', 'options': self.filters })
+
+        for (index, options) in self.data.items():
+            self.actions.append({
+                'method': index,
+                'options': options
+            })
 
         output = {
             'ref': self.refs,
