@@ -58,7 +58,7 @@ class Output:
         Crops our image to given coordinates or to the dominate face
         """
 
-        self.data['crop'] = dict(self.data.get('crop', {}).items() + size.items())
+        self.data['crop'] = dict(self.data.get('crop', {}).items() + position.items())
 
         return self
 
