@@ -7,99 +7,99 @@ Python library for interacting with the [cloud6 API](http://cloud6.io). This lib
 
 Install Pip:
 ```bash
-$ pip install px
+$ pip install cloud6
 ```
 Sudo-chop if necessary...
 ##Examples
 If you want to simply upload an image to the cloud6 CDN:
 ```python
-from _cloud6 import PX
+from _cloud6 import cloud6
 
-px = PX.init(
+cloud6 = cloud6.init(
     user_id='YOUR USER ID',
     api_key='YOUR API KEY',
     api_secret='YOUR API SECRET'
 )
 
-px.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
+cloud6.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
 
-out = px.output({ 'taxi': 'unsplashed_taxi' })
+out = cloud6.output({ 'taxi': 'unsplashed_taxi' })
 out.tag('raw').url('cloud6');
 
-px.save()
+cloud6.save()
 ```
 
 Given that vintage photos are kind of kind of popular right now, let's take this up a notch:
 ```python
-from _cloud6 import PX
+from _cloud6 import cloud6
 
-px = PX.init(
+cloud6 = cloud6.init(
 	user_id='YOUR USER ID',
 	api_key='YOUR API KEY',
 	api_secret='YOUR API SECRET'
 )
 
-px.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
+cloud6.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
 
-out = px.output({ 'taxi': 'unsplashed_taxi' })
+out = cloud6.output({ 'taxi': 'unsplashed_taxi' })
 out.tag('vintage')
 	.url('cloud6')
 	.filter({ sepia: 70 });
 
-px.save()
+cloud6.save()
 ```
 So, we have a bit of an extreme sepia effect going on here, but that's fine.  I think this deserves to be more of a thumbnail.  We are going to resize it now:
 ```python
-from _cloud6 import PX
+from _cloud6 import cloud6
 
-px = PX.init(
+cloud6 = cloud6.init(
 	user_id='YOUR USER ID',
 	api_key='YOUR API KEY',
 	api_secret='YOUR API SECRET'
 )
 
-px.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
+cloud6.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
 
-out = px.output({ 'taxi': 'unsplashed_taxi' })
+out = cloud6.output({ 'taxi': 'unsplashed_taxi' })
 out.tag('vintage_thumb')
 	.url('cloud6')
 	.filter({ sepia: 70 })
 	.resize({ width: 75 });
 
-px.save()
+cloud6.save()
 ```
 Another thing we can do is change the dominate color of an image:
 ```python
-from _cloud6 import PX
+from _cloud6 import cloud6
 
-px = PX.init(
+cloud6 = cloud6.init(
 	user_id='YOUR USER ID',
 	api_key='YOUR API KEY',
 	api_secret='YOUR API SECRET'
 )
 
-px.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
+cloud6.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
 
-out = px.output({ 'taxi': 'unsplashed_taxi' })
+out = cloud6.output({ 'taxi': 'unsplashed_taxi' })
 out.tag('green')
 	.url('cloud6')
 	.filter({colorize: { hex: '#00FF00', strength: 80 }});
 
-px.save()
+cloud6.save()
 ```
 Let's blur the image at the same time.
 ```python
-from _cloud6 import PX
+from _cloud6 import cloud6
 
-px = PX.init(
+cloud6 = cloud6.init(
 	user_id='YOUR USER ID',
 	api_key='YOUR API KEY',
 	api_secret='YOUR API SECRET'
 )
 
-px.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
+cloud6.load('taxi', 'https://s3.amazonaws.com/ooomf-com-files/mtNrf7oxS4uSxTzMBWfQ_DSC_0043.jpg')
 
-out = px.output({ 'taxi': 'unsplashed_taxi' })
+out = cloud6.output({ 'taxi': 'unsplashed_taxi' })
 out.tag('green_blur')
 	.url('cloud6')
 	.filter({
@@ -107,7 +107,7 @@ out.tag('green_blur')
 		stackBlur: 20
 	});
 
-px.save()
+cloud6.save()
 ```
 Now that we have covered some of the simple use cases, feel free to refer to our documentation!
 
