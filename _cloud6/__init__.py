@@ -7,22 +7,22 @@ from .result import Result, ResultInfo
 
 from urlparse import urlparse
 
-class PX:
+class cloud6:
 
 	@staticmethod
 	def init(user_id = None, api_key = None, api_secret = None):
 		"""
-		Factory method to create a new 6px request
+		Factory method to create a new cloud6 request
 		"""
 
-		return PX(
+		return cloud6(
 			os.getenv('CLOUD6_USER_ID', user_id),
 			os.getenv('CLOUD6_API_KEY', api_key),
 			os.getenv('CLOUD6_API_SECRET', api_secret)
 		)
 
 	"""
-	Represents a single 6px request
+	Represents a single cloud6 request
 	"""
 	def __init__(self, user_id, api_key, api_secret):
 		self.user_id = user_id
@@ -35,7 +35,7 @@ class PX:
 
 		self.job_finished = None
 
-		self.version = '0.1.0'
+		self.version = '0.0.1'
 
 		def handleIncoming(ws, message):
 			res = json.loads(message)
@@ -55,7 +55,7 @@ class PX:
 			pass
 			# print "Socket connection closed"
 
-		self.ws = websocket.WebSocketApp("ws://socks.6px.io/",
+		self.ws = websocket.WebSocketApp("ws://socks.cloud6.io/",
 			on_message = handleIncoming,
 			on_error = handleSocketError,
 			on_close = handleSocketClose
@@ -120,7 +120,7 @@ class PX:
 
 	def save(self):
 		"""
-		Make our call to 6px to proess our job
+		Make our call to cloud6 to process your job
 		"""
 
 		inputs = {}
@@ -138,7 +138,7 @@ class PX:
 
 		if self.callback is not None:
 			data['callback'] = {
-				'url': 'http://6px.io'
+				'url': 'http://cloud6.io'
 			}
 
 		response = json.loads(self.request("post", "/users/:userId/jobs", json.dumps(data)))
@@ -169,16 +169,16 @@ class PX:
 
 	def request(self, method, path, data = None):
 		"""
-		Makes our HTTP request to 6px
+		Makes our HTTP request to cloud6
 		"""
 
-		conn = httplib.HTTPSConnection('api.6px.io')
+		conn = httplib.HTTPSConnection('api.cloud6.io')
 
 		path = path.replace(':userId', self.user_id)
 
 		conn.request(method.upper(), '/v1/'+ path + '?key='+ self.api_key + '&secret='+ self.api_secret, data, {
 			'Content-Type': 'application/json',
-			'User-Agent': '6px Python SDK '+ self.version
+			'User-Agent': 'cloud6 Python SDK '+ self.version
 		})
 
 		res = conn.getresponse()

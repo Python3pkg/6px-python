@@ -2,12 +2,12 @@ from distutils.core import setup
 
 setup(
 	name='px',
-	version='0.1.0',
-	author='6px',
-	author_email='ops@6px.io',
-	packages=['_6px'],
-    url='https://github.com/6px-io/6px-python',
+	version='0.0.1',
+	author='cloud6',
+	author_email='ops@cloud6.io',
+	packages=['_cloud6'],
+    url='https://github.com/cloud6-io/cloud6-python',
 	license='MIT',
-	description='Python module for 6px',
+	description='Python module for cloud6',
 	install_requires=['websocket-client']
 )
