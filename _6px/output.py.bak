@@ -24,7 +24,7 @@ class Output:
         Sets an action to our image to resize given the width and height given
         """
 
-        self.data['resize'] = dict(list(self.data.get('resize', {}).items()) + list(size.items()))
+        self.data['resize'] = dict(self.data.get('resize', {}).items() + size.items())
 
         return self
 
@@ -44,7 +44,7 @@ class Output:
         Rotates our input image
         """
 
-        self.data['rotate'] = dict(list(self.data.get('rotate', {}).items()) + list(size.items()))
+        self.data['rotate'] = dict(self.data.get('rotate', {}).items() + size.items())
 
         return self
 
@@ -58,7 +58,7 @@ class Output:
         Crops our image to given coordinates or to the dominate face
         """
 
-        self.data['crop'] = dict(list(self.data.get('crop', {}).items()) + list(position.items()))
+        self.data['crop'] = dict(self.data.get('crop', {}).items() + position.items())
 
         return self
 
@@ -70,7 +70,7 @@ class Output:
         if self.hasFilters:
             self.actions.append({ 'method': 'filter', 'options': self.filters })
 
-        for (index, options) in list(self.data.items()):
+        for (index, options) in self.data.items():
             self.actions.append({
                 'method': index,
                 'options': options

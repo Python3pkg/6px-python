@@ -15,7 +15,7 @@ class ResultOutput:
         self.data = data
         self.refs = {}
 
-        for (index, item) in list(self.data['data']['output'].items()):
+        for (index, item) in self.data['data']['output'].items():
             self.refs[index] = item
 
     def get_location(self, refName):
